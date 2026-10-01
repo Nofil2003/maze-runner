@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# macOS / Windows junk
+.DS_Store
+._*
+__MACOSX/
+Thumbs.db
+
+# Editors / tools
+.vscode/
+.idea/
+*.swp
+.Rhistory
+
+# Local scratch (don't commit experiment output)
+scratch/
+*.local.*
