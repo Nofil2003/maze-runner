@@ -42,14 +42,62 @@ def alwaysRightSearch(problem):
     state = problem.getStartState()
     actions = []
     while not problem.isGoalState(state):
-        successors = problem.getSuccessors(state)   # list of (next, action, cost)
-        east = [s for s in successors if s[1] == 'East']
+        successors = problem.getSuccessors(state)  # list of (next, action, cost)
+        east = [s for s in successors if s[1] == "East"]
         if not east:
-            return None   # a wall straight ahead: the doors close with him inside
+            return None  # a wall straight ahead: the doors close with him inside
         nextState, action, stepCost = east[0]
         actions.append(action)
         state = nextState
     return actions
+
+
+# ----------------------------------------------------------------------
+# The shared graph-search loop (used by Q1, Q2, Q5, Q6 and Q7)
+# ----------------------------------------------------------------------
+def graphSearch(problem, fringe, priorityFunction=None):
+    """
+    One graph-search loop, many fringes.
+
+    DFS, BFS, UCS, greedy and A* differ only in the order they take states out
+    of the fringe, so all of them run through here. 'fringe' is a Stack, a
+    Queue or a PriorityQueue from util. For a PriorityQueue,
+    'priorityFunction' is called as priorityFunction(state, costSoFar) and
+    returns the priority to push with; the plain containers ignore it.
+
+    A fringe entry is (state, actionsSoFar, costSoFar), so a goal popped off
+    the fringe hands back its own path. Returns the list of actions, [] if the
+    start state is already a goal, or None if no goal is reachable.
+    """
+
+    def push(entry):
+        if priorityFunction is None:
+            fringe.push(entry)
+        else:
+            state, _, costSoFar = entry
+            fringe.push(entry, priorityFunction(state, costSoFar))
+
+    push((problem.getStartState(), [], 0))
+    expanded = set()
+
+    while not fringe.isEmpty():
+        state, actions, costSoFar = fringe.pop()
+
+        # Goal test when the state is POPPED, not when it was generated.
+        if problem.isGoalState(state):
+            return actions
+
+        # The same state can sit in the fringe more than once; expand it once.
+        if state in expanded:
+            continue
+        expanded.add(state)
+
+        # getSuccessors is what counts as an expansion: exactly one call here.
+        for nextState, action, stepCost in problem.getSuccessors(state):
+            if nextState not in expanded:
+                push((nextState, actions + [action], costSoFar + stepCost))
+
+    return None
 
 
 # ----------------------------------------------------------------------
@@ -67,8 +115,9 @@ def depthFirstSearch(problem):
     Hint: a fringe entry can hold more than a state. Storing
     (state, actionsSoFar) is an easy way to remember how you got there.
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # A LIFO fringe makes the shared loop take the most recently generated
+    # state first, which is depth-first order.
+    return graphSearch(problem, Stack())
 
 
 # ----------------------------------------------------------------------
