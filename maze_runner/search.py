@@ -173,8 +173,8 @@ def iterativeDeepeningSearch(problem, maxDepth=10000):
 # ----------------------------------------------------------------------
 def uniformCostSearch(problem):
     """Search the node of least total path cost g(n) first (graph search)."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # Priority is g(n): the cost of the path that reached this state.
+    return graphSearch(problem, PriorityQueue(), lambda state, costSoFar: costSoFar)
 
 
 # ----------------------------------------------------------------------
