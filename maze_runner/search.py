@@ -125,8 +125,9 @@ def depthFirstSearch(problem):
 # ----------------------------------------------------------------------
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first (graph search)."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # A FIFO fringe makes the shared loop take the oldest generated state
+    # first, so states come out in order of increasing depth.
+    return graphSearch(problem, Queue())
 
 
 # ----------------------------------------------------------------------
