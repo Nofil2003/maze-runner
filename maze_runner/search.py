@@ -185,8 +185,10 @@ def greedyBestFirstSearch(problem, heuristic=nullHeuristic):
     Search the node that SEEMS closest to the goal first, i.e. the one with
     the lowest heuristic(state, problem) value (graph search).
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # Priority is h(n) alone: the cost already paid is ignored.
+    return graphSearch(
+        problem, PriorityQueue(), lambda state, costSoFar: heuristic(state, problem)
+    )
 
 
 # ----------------------------------------------------------------------
