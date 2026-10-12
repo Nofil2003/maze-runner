@@ -199,8 +199,12 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     Search the node with the lowest f(n) = g(n) + heuristic(n) first
     (graph search).
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # Priority is f(n) = g(n) + h(n).
+    return graphSearch(
+        problem,
+        PriorityQueue(),
+        lambda state, costSoFar: costSoFar + heuristic(state, problem),
+    )
 
 
 # Abbreviations
