@@ -44,13 +44,14 @@ class KeyHuntProblem(SearchProblem):
 
     def getStartState(self):
         """Returns the start state, a tuple (startPosition, ...)."""
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # Thomas starts at the start position with every code piece remaining.
+        # remainingKeys is a frozenset, so the state stays hashable.
+        return (self.startPosition, frozenset(self.keys))
 
     def isGoalState(self, state):
         """True when every code piece has been collected AND Thomas is at the exit."""
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        position, remainingKeys = state
+        return position == self.exit and len(remainingKeys) == 0
 
     def getSuccessors(self, state):
         """
@@ -65,8 +66,19 @@ class KeyHuntProblem(SearchProblem):
         self._expandedOrder.append(state[0])
 
         successors = []
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        position, remainingKeys = state
+
+        for action, nextPosition in self.maze.neighbors(position):
+            # Collect the key if one is present
+            if nextPosition in remainingKeys:
+                newRemainingKeys = remainingKeys - {nextPosition}
+            else:
+                newRemainingKeys = remainingKeys
+
+            nextState = (nextPosition, newRemainingKeys)
+            stepCost = self.maze.cost(nextPosition)
+            successors.append((nextState, action, stepCost))
+
         return successors
 
     # --- Provided: you do not need to change anything below -------------
