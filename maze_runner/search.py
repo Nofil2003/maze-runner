@@ -151,8 +151,45 @@ def depthLimitedSearch(problem, limit):
     search miss a solution that fits within the limit). Instead, avoid cycles
     by not revisiting a state that is already on the current path.
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    start = problem.getStartState()
+
+    def recursiveDLS(state, actions, path, depth):
+        # Check goal first
+        if problem.isGoalState(state):
+            return actions
+
+        # Goal was not found and we cannot go deeper
+        if depth == limit:
+            return CUTOFF
+
+        cutoff_occurred = False
+
+        # Expand current state
+        successors = problem.getSuccessors(state)
+
+        for nextState, action, stepCost in successors:
+            # Avoid cycles on the CURRENT path only
+            if nextState in path:
+                continue
+
+            result = recursiveDLS(
+                nextState, actions + [action], path | {nextState}, depth + 1
+            )
+
+            # Goal found
+            if result is not None and result is not CUTOFF:
+                return result
+
+            # At least one branch hit the depth limit
+            if result is CUTOFF:
+                cutoff_occurred = True
+
+        if cutoff_occurred:
+            return CUTOFF
+
+        return None
+
+    return recursiveDLS(start, [], {start}, 0)
 
 
 # ----------------------------------------------------------------------
