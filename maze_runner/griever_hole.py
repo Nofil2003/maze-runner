@@ -121,6 +121,37 @@ def keyHuntHeuristic(state, problem):
         the true number of steps between two cells, and caches the result
       * util.manhattanDistance(pos1, pos2)
     """
-    position = state[0]
-    "*** YOUR CODE HERE ***"
-    return 0   # the trivial (but consistent!) heuristic
+    # Minimum spanning tree over Thomas's position, the remaining keys and the
+    # exit, with true maze distances as edge weights.
+    position, remainingKeys = state
+
+    # If no keys remain, only the exit matters
+    if not remainingKeys:
+        return mazeDistance(position, problem.exit, problem.maze, problem.heuristicInfo)
+
+    # Required locations
+    points = [position] + list(remainingKeys) + [problem.exit]
+
+    # Prim's MST algorithm
+    visited = {position}
+    unvisited = set(points[1:])
+    totalCost = 0
+
+    while unvisited:
+        bestDistance = float("inf")
+        bestPoint = None
+
+        for visitedPoint in visited:
+            for nextPoint in unvisited:
+                distance = mazeDistance(
+                    visitedPoint, nextPoint, problem.maze, problem.heuristicInfo
+                )
+                if distance < bestDistance:
+                    bestDistance = distance
+                    bestPoint = nextPoint
+
+        totalCost += bestDistance
+        visited.add(bestPoint)
+        unvisited.remove(bestPoint)
+
+    return totalCost
