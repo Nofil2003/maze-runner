@@ -201,8 +201,18 @@ def iterativeDeepeningSearch(problem, maxDepth=10000):
     solution. Return that solution, or None if the problem has no solution
     (or none within maxDepth).
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    for depth in range(maxDepth + 1):
+        result = depthLimitedSearch(problem, depth)
+
+        # A solution was found
+        if result is not CUTOFF and result is not None:
+            return result
+
+        # No solution exists
+        if result is None:
+            return None
+
+    return None
 
 
 # ----------------------------------------------------------------------
